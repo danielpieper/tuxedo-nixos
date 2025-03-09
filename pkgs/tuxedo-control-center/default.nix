@@ -89,7 +89,7 @@ stdenv.mkDerivation {
       --replace "/etc/tcc" "/var/lib/tcc" \
       --replace "/opt/tuxedo-control-center/resources/dist/tuxedo-control-center/data/service/tccd" "$out/bin/tccd" \
       --replace "/opt/tuxedo-control-center/resources/dist/tuxedo-control-center/data/camera/cameractrls.py" \
-        "$out/resources/dist/tuxedo-control-center/data/camera/cameractrls.py" \
+        "$out/libexec/cameractrls.py" \
       --replace "/opt/tuxedo-control-center/resources/dist/tuxedo-control-center/data/camera/v4l2_kernel_names.json" \
         "$out/share/tcc/v4l2_kernel_names.json"
     
