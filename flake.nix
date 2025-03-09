@@ -41,11 +41,11 @@
     {
       packages.x86_64-linux.default = tuxedo-control-center;
 
-      nixpkgs.overlays = [
-        (final: prev: {
+      overlay = (
+        final: prev: {
           inherit tuxedo-control-center;
-        })
-      ];
+        }
+      );
 
       nixosModules.default = import ./modules/tuxedo-control-center.nix;
     };
