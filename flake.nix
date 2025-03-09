@@ -1,34 +1,52 @@
 {
-  description = "System Configuration";
+  description = "Tuxedo Control Center for NixOS";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-22.11";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
+    nixpkgs-22-11.url = "github:NixOS/nixpkgs/nixos-22.11";
 
-    flake-compat = {
-      url = "github:edolstra/flake-compat";
-      flake = false;
-    };
+    flake-compat.url = "https://flakehub.com/f/edolstra/flake-compat/1.tar.gz";
   };
 
-  outputs = { self, nixpkgs, flake-compat }: {
-
-    packages.x86_64-linux.default =
-      # Is there a simpler way to whitelist electron?
-      (import nixpkgs {
-        currentSystem = "x86_64-linux";
-        localSystem = "x86_64-linux";
-        config = {
-          permittedInsecurePackages = [
-            "electron-13.6.9"
-            "nodejs-14.21.3"
-            "openssl-1.1.1t"
-            "openssl-1.1.1u"
-            "openssl-1.1.1v"
-            "openssl-1.1.1w"
+  outputs =
+    {
+      self,
+      nixpkgs,
+      nixpkgs-22-11,
+      flake-compat,
+    }:
+    let
+      system = "x86_64-linux";
+      tuxedo-control-center =
+        (import nixpkgs-22-11 {
+          currentSystem = system;
+          localSystem = system;
+          overlays = [
+            (final: prev: {
+              nodejs = prev.pkgs.nodejs-14_x;
+            })
           ];
-        };
-      }).pkgs.callPackage ./nix/tuxedo-control-center {};
+          config = {
+            allowInsecure = true;
+            permittedInsecurePackages = [
+              "nodejs-14.21.3"
+            ];
+          };
+        }).pkgs.callPackage
+          ./pkgs/tuxedo-control-center
+          {
+            electron_34 = (import nixpkgs { inherit system; }).electron_34;
+          };
+    in
+    {
+      packages.x86_64-linux.default = tuxedo-control-center;
 
-    nixosModules.default = import ./nix/module.nix;
-  };
+      nixpkgs.overlays = [
+        (final: prev: {
+          inherit tuxedo-control-center;
+        })
+      ];
+
+      nixosModules.default = import ./modules/tuxedo-control-center.nix;
+    };
 }
