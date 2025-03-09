@@ -104,8 +104,8 @@ stdenv.mkDerivation {
       --replace "/opt/tuxedo-control-center/resources/dist/tuxedo-control-center/data/service/tccd" "$out/bin/tccd"
     
     substituteInPlace src/dist-data/tuxedo-control-center-tray.desktop \
-      --replace "/opt/tuxedo-control-center/tuxedo-control-center" "$out/bin/tuxedo-control-center" \
-      --replace "Icon=tuxedo-control-center" "Icon=$out/share/icons/hicolor/scalable/apps/tuxedo-control-center_256.svg"
+      --replace "/opt/tuxedo-control-center/tuxedo-control-center" "tuxedo-control-center" \
+      --replace "Icon=tuxedo-control-center" "Icon=tuxedo-control-center_256"
     
     substituteInPlace src/dist-data/tuxedo-control-center.desktop \
       --replace "/opt/tuxedo-control-center/tuxedo-control-center" "$out/bin/tuxedo-control-center" \
