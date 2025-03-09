@@ -193,6 +193,7 @@ stdenv.mkDerivation {
     makeWrapper ${electron_34}/bin/electron $out/bin/tuxedo-control-center \
       --add-flags "$out/e-app/e-app/main.js" \
       --add-flags "--no-tccd-version-check" \
+      --prefix PATH : ${lib.makeBinPath [ python3 ]} \
       --prefix NODE_PATH : $out/node_modules
   '';
 
