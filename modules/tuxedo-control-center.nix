@@ -44,9 +44,10 @@ in
         "tuxedo_io")
     ];
 
+    boot.initrd.services.udev.packages = [ cfg.package ];
+
     environment.systemPackages = [ cfg.package ];
     services.dbus.packages = [ cfg.package ];
-    services.udev.packages = [ cfg.package ];
     
     systemd = {
       packages = [ cfg.package ];
