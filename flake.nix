@@ -39,7 +39,7 @@
     {
       packages.x86_64-linux.default = tuxedo-control-center;
 
-      overlay = (
+      overlays.default = (
         final: prev: {
           inherit tuxedo-control-center;
         }
