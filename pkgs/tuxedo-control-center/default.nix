@@ -6,8 +6,8 @@
   python3,
   udev,
   makeWrapper,
-  nodejs-14_x,
-  electron_34,
+  nodejs,
+  electron,
   fetchFromGitHub,
   gnugrep,
   gawk,
@@ -17,7 +17,7 @@
 
 let
   version = "2.1.16";
-  nodejs = nodejs-14_x;
+  inherit nodejs;
 
   baseNodePackages = (
     import ./node-composition.nix {
@@ -190,7 +190,7 @@ stdenv.mkDerivation {
       --prefix PATH : ${lib.makeBinPath [ gnugrep gawk xorg.xrandr procps ]} \
       --prefix NODE_PATH : $out/node_modules
 
-    makeWrapper ${electron_34}/bin/electron $out/bin/tuxedo-control-center \
+    makeWrapper ${electron}/bin/electron $out/bin/tuxedo-control-center \
       --add-flags "$out/e-app/e-app/main.js" \
       --add-flags "--no-tccd-version-check" \
       --prefix PATH : ${lib.makeBinPath [ python3 ]} \

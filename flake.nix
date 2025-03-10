@@ -2,9 +2,7 @@
   description = "Tuxedo Control Center for NixOS";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
-    nixpkgs-22-11.url = "github:NixOS/nixpkgs/nixos-22.11";
-
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.05";
     flake-compat.url = "https://flakehub.com/f/edolstra/flake-compat/1.tar.gz";
   };
 
@@ -12,13 +10,12 @@
     {
       self,
       nixpkgs,
-      nixpkgs-22-11,
       flake-compat,
     }:
     let
       system = "x86_64-linux";
-      tuxedo-control-center =
-        (import nixpkgs-22-11 {
+      tcc-pkgs =
+        (import nixpkgs {
           currentSystem = system;
           localSystem = system;
           overlays = [
@@ -30,13 +27,14 @@
             allowInsecure = true;
             permittedInsecurePackages = [
               "nodejs-14.21.3"
+              "electron-13.6.9"
+              "openssl-1.1.1w"
             ];
           };
-        }).pkgs.callPackage
-          ./pkgs/tuxedo-control-center
-          {
-            electron_34 = (import nixpkgs { inherit system; }).electron_34;
-          };
+        }).pkgs;
+      tuxedo-control-center = tcc-pkgs.callPackage ./pkgs/tuxedo-control-center {
+        electron = tcc-pkgs.electron_13;
+      };
     in
     {
       packages.x86_64-linux.default = tuxedo-control-center;
