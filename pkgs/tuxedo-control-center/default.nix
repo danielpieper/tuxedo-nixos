@@ -195,6 +195,7 @@ stdenv.mkDerivation {
     makeWrapper ${electron}/bin/electron $out/bin/tuxedo-control-center \
       --add-flags "$out/e-app/e-app/main.js" \
       --add-flags "--no-tccd-version-check" \
+      --add-flags "\''${NIXOS_OZONE_WL:+\''${WAYLAND_DISPLAY:+--enable-features=UseOzonePlatform --ozone-platform=wayland}}" \
       --prefix PATH : ${lib.makeBinPath [ python3 ]} \
       --prefix NODE_PATH : $out/node_modules
   '';
