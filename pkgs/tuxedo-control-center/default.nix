@@ -163,6 +163,7 @@ stdenv.mkDerivation {
       $out/libexec \
       $out/share/tcc \
       $out/share/polkit-1/actions \
+      $out/share/metainfo \
       $out/lib/systemd/system \
       $out/etc/dbus-1/system.d \
       $out/etc/udev/rules.d
@@ -172,6 +173,7 @@ stdenv.mkDerivation {
     cp src/dist-data/tuxedo-control-center-tray.desktop $out/share/tcc/
     cp src/dist-data/com.tuxedocomputers.tccd.policy $out/share/polkit-1/actions/
     cp src/dist-data/com.tuxedocomputers.tomte.policy $out/share/polkit-1/actions/
+    cp src/dist-data/com.tuxedocomputers.tcc.metainfo.xml $out/share/metainfo/
     cp src/dist-data/tccd-sleep.service $out/lib/systemd/system/
     cp src/dist-data/tccd.service $out/lib/systemd/system/
     cp src/dist-data/com.tuxedocomputers.tccd.conf $out/etc/dbus-1/system.d/
@@ -201,6 +203,7 @@ stdenv.mkDerivation {
     description = "Fan and power management GUI for TUXEDO laptops";
     homepage = "https://github.com/tuxedocomputers/tuxedo-control-center/";
     license = licenses.gpl3Plus;
+    mainProgram = "tuxedo-control-center";
     maintainers = [ maintainers.sund3RRR ];
     platforms = [ "x86_64-linux" ];
   };
