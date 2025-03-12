@@ -32,33 +32,42 @@ in
     };
   };
 
-  config = mkIf cfg.enable {
-    hardware.tuxedo-drivers.enable = true;
-    boot.kernelModules = [
-      # Tuxedo Control Center has a requirement on the minimum version
-      # of "tuxedo_io" kernel module.
-      # The exact requirement is currently in the
-      # "src/native-lib/tuxedo_io_lib/tuxedo_io_ioctl.h" file of tuxedo-control-center
-      # (i.e. the #define of MOD_API_MIN_VERSION).
-      # The respective version of the module itself is in the
-      # "src/tuxedo_io/tuxedo_io.c" file of tuxedo-drivers
-      # (i.e. the #define of MODULE_VERSION).
-      (warnIf ((builtins.compareVersions tuxedo-drivers.version "4.12.1") < 0)
-        "Tuxedo Control Center requires at least version 4.12.1 of tuxedo-drivers; current version is ${tuxedo-drivers.version}"
-        "tuxedo_io"
-      )
-    ];
+  config = mkIf cfg.enable (
+    lib.mkMerge [
+      ({
+        hardware.tuxedo-drivers.enable = true;
 
-    environment.systemPackages = [ cfg.package ];
-    services.dbus.packages = [ cfg.package ];
-    services.udev.packages = [ cfg.package ];
+        boot.kernelModules = [
+          # Tuxedo Control Center has a requirement on the minimum version
+          # of "tuxedo_io" kernel module.
+          # The exact requirement is currently in the
+          # "src/native-lib/tuxedo_io_lib/tuxedo_io_ioctl.h" file of tuxedo-control-center
+          # (i.e. the #define of MOD_API_MIN_VERSION).
+          # The respective version of the module itself is in the
+          # "src/tuxedo_io/tuxedo_io.c" file of tuxedo-drivers
+          # (i.e. the #define of MODULE_VERSION).
+          (warnIf ((builtins.compareVersions tuxedo-drivers.version "4.12.1") < 0)
+            "Tuxedo Control Center requires at least version 4.12.1 of tuxedo-drivers; current version is ${tuxedo-drivers.version}"
+            "tuxedo_io"
+          )
+        ];
 
-    systemd = {
-      packages = [ cfg.package ];
-      services."tccd".wantedBy = [ "multi-user.target" ];
-      services."tccd-sleep".wantedBy = [ "sleep.target" ];
-    };
+        environment.systemPackages = [ cfg.package ];
+        services.dbus.packages = [ cfg.package ];
+        services.udev.packages = [ cfg.package ];
 
-    meta.maintainers = with lib.maintainers; [ sund3RRR ];
-  };
+        systemd = {
+          packages = [ cfg.package ];
+          services."tccd".wantedBy = [ "multi-user.target" ];
+          services."tccd-sleep".wantedBy = [ "sleep.target" ];
+        };
+
+        meta.maintainers = with lib.maintainers; [ sund3RRR ];
+      })
+
+      (lib.mkIf (lib.elem "nvidia" config.services.xserver.videoDrivers) {
+        systemd.services."tccd".path = [ config.hardware.nvidia.package ];
+      })
+    ]
+  );
 }
