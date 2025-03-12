@@ -13,6 +13,7 @@
   gawk,
   xorg,
   procps,
+  which,
 }:
 
 let
@@ -189,14 +190,14 @@ stdenv.mkDerivation {
   postFixup = ''
     makeWrapper ${nodejs}/bin/node $out/bin/tccd \
       --add-flags "$out/service-app/service-app/main.js" \
-      --prefix PATH : ${lib.makeBinPath [ gnugrep gawk xorg.xrandr procps ]} \
-      --prefix NODE_PATH : $out/node_modules
+      --prefix PATH : "${lib.makeBinPath [ gnugrep gawk xorg.xrandr procps which ]}" \
+      --prefix NODE_PATH : "$out/node_modules"
 
     makeWrapper ${electron}/bin/electron $out/bin/tuxedo-control-center \
       --add-flags "$out/e-app/e-app/main.js" \
       --add-flags "--no-tccd-version-check" \
-      --prefix PATH : ${lib.makeBinPath [ python3 ]} \
-      --prefix NODE_PATH : $out/node_modules
+      --prefix PATH : "${lib.makeBinPath [ python3 ]}" \
+      --prefix NODE_PATH : "$out/node_modules"
   '';
 
   meta = with lib; {
