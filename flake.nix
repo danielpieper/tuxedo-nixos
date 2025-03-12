@@ -35,16 +35,15 @@
       tuxedo-control-center = tcc-pkgs.callPackage ./pkgs/tuxedo-control-center {
         electron = tcc-pkgs.electron_13;
       };
+      tccOverlay = final: prev: {
+        inherit tuxedo-control-center;
+      };
     in
     {
       packages.x86_64-linux.default = tuxedo-control-center;
 
-      overlays.default = (
-        final: prev: {
-          inherit tuxedo-control-center;
-        }
-      );
+      overlays.default = tccOverlay;
 
-      nixosModules.default = import ./modules/tuxedo-control-center.nix;
+      nixosModules.default = import ./modules { inherit tccOverlay; };
     };
 }
