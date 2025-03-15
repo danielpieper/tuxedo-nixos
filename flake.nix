@@ -18,11 +18,6 @@
         (import nixpkgs {
           currentSystem = system;
           localSystem = system;
-          overlays = [
-            (final: prev: {
-              nodejs = prev.pkgs.nodejs-14_x;
-            })
-          ];
           config = {
             allowInsecure = true;
             permittedInsecurePackages = [
@@ -33,6 +28,7 @@
         }).pkgs;
       tuxedo-control-center = tcc-pkgs.callPackage ./pkgs/tuxedo-control-center {
         electron = tcc-pkgs.electron_13;
+        nodejs = tcc-pkgs.pkgs.nodejs-14_x;
       };
       tccOverlay = final: prev: {
         inherit tuxedo-control-center;
@@ -40,9 +36,7 @@
     in
     {
       packages.x86_64-linux.default = tuxedo-control-center;
-
       overlays.default = tccOverlay;
-
       nixosModules.default = import ./modules { inherit tccOverlay; };
     };
 }
