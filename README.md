@@ -90,4 +90,4 @@ Then enable the module in `configuration.nix`:
 ## Updating
 
 To update to a new version, see the [updating
-instructions](./nix/tuxedo-control-center/README.md).
+instructions](./pkgs/tuxedo-control-center/README.md).
